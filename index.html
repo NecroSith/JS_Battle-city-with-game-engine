@@ -10,19 +10,62 @@
 
 <body>
     <script src="./engine/Loader.js"></script>
+    <script src="./engine/Renderer.js"></script>
+    <script src="./engine/Sprite.js"></script>
+    <script src="./engine/Container.js"></script>
+
     <script>
         const {
-            Loader
+            Loader,
+            Renderer,
+            Sprite,
+            Container
         } = GameEngine;
 
+        const renderer = new Renderer({
+            width: 500,
+            height: 500,
+            background: 'grey',
+
+            // update(timestamp) {
+            //     renderer.draw((canvas, context) => {
+            //         context.beginPath();
+            //         context.fillStyle = 'black';
+            //         // Make point go in circles
+            //         context.arc(canvas.width / 2 + 100 * Math.cos(timestamp / 100), canvas.height / 2 + 100 * Math.sin(timestamp / 100), 5, 0, Math.PI * 2);
+            //         context.fill();
+            //     })
+            // }
+
+            update(timestamp) {
+                if (!sprite) {
+                    return;
+                }
+                sprite.x = renderer.canvas.width / 2 + 100 * Math.cos(timestamp / 100);
+                sprite.y = renderer.canvas.height / 2 + 100 * Math.sin(timestamp / 100);
+
+            }
+        });
+
         const loader = new Loader;
+        let sprite = null;
+
         loader.addImage('dyson', './static/img/dyson.jpg');
         loader.addImage('cyberpunk', './static/img/cyberpunk.jpg');
         loader.addJson('persons', './static/json/persons.json');
         loader.addJson('star wars', './static/json/starwars.json');
         loader.load(() => {
-            console.log('All loaded');
+            sprite = new Sprite(loader.getImage('cyberpunk'));
+            renderer.stage.add(sprite);
+
+            sprite.width = 100;
+            sprite.height = 100;
         });
+
+        document.body.append(renderer.canvas);
+        // loader.load('img', () => {
+        //     console.log('Images loaded');
+        // });
         // loader.load('json', () => {
         //     console.log('Jsons loaded');
         // });

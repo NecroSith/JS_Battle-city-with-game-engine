@@ -24,6 +24,14 @@
             console.log(this.loadOrder.jsons);
         }
 
+        getImage(name) {
+            return this.resources.images[name];
+        }
+
+        getJson(name) {
+            return this.resources.jsons[name];
+        }
+
         load(callback) {
             const promises = [];
             for (const data
@@ -41,7 +49,7 @@
                             this.loadOrder.images.splice(index, 1);
                         }
                         console.log(obj);
-                        document.body.append(obj);
+                        // document.body.append(obj);
                     })
 
                 promises.push(promise);
@@ -85,8 +93,9 @@
         //             break;
         //     }
         //     // Awaits completion of all promises and calls callback function after 
-        //     console.log(promises);
-        //     Promise.all(promises).then(callback);
+        //     const newPromises = promises.flat();
+        //     console.log(newPromises);
+        //     Promise.all(promises.flat()).then(callback);
         // }
 
         // static addToResources(loadOrderArr, promiseOnLoad, loadResourcesArr) {
