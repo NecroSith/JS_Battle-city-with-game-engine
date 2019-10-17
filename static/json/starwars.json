@@ -1,0 +1,21 @@
+[{
+        "id": 1,
+        "name": "Luke Skywalker",
+        "occupation": "Hero"
+    },
+    {
+        "id": 2,
+        "name": "Leia Organa",
+        "occupation": "Hero"
+    },
+    {
+        "id": 3,
+        "name": "Darth Vader",
+        "occupation": "Villain"
+    },
+    {
+        "id": 4,
+        "name": "Emperor Palpatin",
+        "occupation": "Main villain"
+    }
+]

@@ -14,10 +14,18 @@
         const {
             Loader
         } = GameEngine;
-        Loader.loadImage('./static/cyberpunk.jpg')
-            .then(image => {
-                document.body.append(image);
-            })
+
+        const loader = new Loader;
+        loader.addImage('dyson', './static/img/dyson.jpg');
+        loader.addImage('cyberpunk', './static/img/cyberpunk.jpg');
+        loader.addJson('persons', './static/json/persons.json');
+        loader.addJson('star wars', './static/json/starwars.json');
+        loader.load(() => {
+            console.log('All loaded');
+        });
+        // loader.load('json', () => {
+        //     console.log('Jsons loaded');
+        // });
     </script>
 </body>
 
