@@ -27,48 +27,60 @@
             height: 500,
             background: 'grey',
 
-            // update(timestamp) {
-            //     renderer.draw((canvas, context) => {
-            //         context.beginPath();
-            //         context.fillStyle = 'black';
-            //         // Make point go in circles
-            //         context.arc(canvas.width / 2 + 100 * Math.cos(timestamp / 100), canvas.height / 2 + 100 * Math.sin(timestamp / 100), 5, 0, Math.PI * 2);
-            //         context.fill();
-            //     })
-            // }
-
             update(timestamp) {
-                if (!sprite) {
+                if (!sprite1 || !sprite2) {
                     return;
                 }
-                sprite.x = renderer.canvas.width / 2 + 100 * Math.cos(timestamp / 100);
-                sprite.y = renderer.canvas.height / 2 + 100 * Math.sin(timestamp / 100);
 
+                sprite2.frame.x = sprite2.frame.width / 2 + 100 * Math.cos(timestamp / 200);
+                sprite2.frame.y = sprite2.frame.height / 2 + 100 * Math.sin(timestamp / 100);
+
+                sprite2.x = renderer.canvas.width / 2 + 100 * Math.cos(timestamp / 200);
+                sprite2.y = renderer.canvas.height / 2 + 100 * Math.sin(timestamp / 100);
             }
         });
 
         const loader = new Loader;
-        let sprite = null;
+        let sprite1 = null,
+            sprite2 = null;
 
         loader.addImage('dyson', './static/img/dyson.jpg');
         loader.addImage('cyberpunk', './static/img/cyberpunk.jpg');
         loader.addJson('persons', './static/json/persons.json');
         loader.addJson('star wars', './static/json/starwars.json');
-        loader.load(() => {
-            sprite = new Sprite(loader.getImage('cyberpunk'));
-            renderer.stage.add(sprite);
+        loader.load('img', () => {
+            sprite1 = new Sprite(loader.getImage('cyberpunk'), {
+                anchorX: 0.5,
+                anchorY: 0.5
+            });
 
-            sprite.width = 100;
-            sprite.height = 100;
+            const container = new Container();
+            renderer.stage.add(container);
+            container.add(sprite1);
+
+            sprite1.absoluteX = 0;
+            sprite1.absoluteY = 0;
         });
 
+        loader.load('img', () => {
+            sprite2 = new Sprite(loader.getImage('dyson'), {
+                // anchorX: 0,
+                // anchorY: 0
+            });
+
+            const container = new Container();
+            renderer.stage.add(container);
+            container.add(sprite2);
+
+            // sprite2.width = 200;
+            // sprite2.height = 200;
+
+            sprite2.absoluteX = 0;
+            sprite2.absoluteY = 0;
+
+        })
+
         document.body.append(renderer.canvas);
-        // loader.load('img', () => {
-        //     console.log('Images loaded');
-        // });
-        // loader.load('json', () => {
-        //     console.log('Jsons loaded');
-        // });
     </script>
 </body>
 

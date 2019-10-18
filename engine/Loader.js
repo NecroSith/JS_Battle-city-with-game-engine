@@ -25,6 +25,7 @@
         }
 
         getImage(name) {
+            console.log(this.resources.images.name);
             return this.resources.images[name];
         }
 
@@ -32,96 +33,48 @@
             return this.resources.jsons[name];
         }
 
-        load(callback) {
-            const promises = [];
-            for (const data
-                of this.loadOrder.images) {
-                const { name, src } = data;
-                console.log(data);
-                const promise = Loader.loadImage(src)
-                    .then(obj => {
-                        // Adding data to resources
-                        this.resources.images[name] = obj;
-
-                        // deleting same data from loadOrder 
-                        if (this.loadOrder.images.includes(data)) {
-                            const index = this.loadOrder.images.indexOf(data);
-                            this.loadOrder.images.splice(index, 1);
-                        }
-                        console.log(obj);
-                        // document.body.append(obj);
-                    })
-
-                promises.push(promise);
+        load(type, callback) {
+            let promises = [];
+            switch (type) {
+                case 'img':
+                    promises.push(Loader.addToResources(this.loadOrder.images, Loader.loadImage, this.resources.images));
+                    break;
+                case 'json':
+                    promises.push(Loader.addToResources(this.loadOrder.jsons, Loader.loadJson, this.resources.jsons));
+                    break;
+                default:
+                    console.log('Unknown type');
+                    break;
             }
-
-            for (const data
-                of this.loadOrder.jsons) {
-                const { name, address } = data;
-                console.log(data);
-                const promise = Loader.loadJson(address)
-                    .then(obj => {
-                        // Adding data to resources
-                        this.resources.jsons[name] = obj;
-
-                        // deleting same data from loadOrder 
-                        if (this.loadOrder.jsons.includes(data)) {
-                            const index = this.loadOrder.jsons.indexOf(data);
-                            this.loadOrder.jsons.splice(index, 1);
-                        }
-                    })
-                promises.push(promise);
-            }
-            console.log(promises)
+            // Awaits completion of all promises and calls callback function after 
             Promise.all(promises).then(callback);
         }
 
-        //! Doesn't work for now. TODO: figure out and fix. Used duplication instead
+        static addToResources(loadOrderArr, promiseOnLoad, loadResourcesArr) {
+            const promises = [];
+            for (const data
+                of loadOrderArr) {
+                const name = Object.keys(data)[0];
+                const src = Object.keys(data)[1];
+                console.log(data);
+                const promise = promiseOnLoad(data[src])
+                    .then(obj => {
+                        // Adding data to resources
+                        loadResourcesArr[data[name]] = obj;
+                        console.log(loadResourcesArr);
 
-        // load(type, callback) {
-        //     let promises = [];
-        //     switch (type) {
-        //         case 'img':
-        //             promises.push(Loader.addToResources(this.loadOrder.images, Loader.loadImage, this.resources.images));
-        //             console.log(promises);
-        //             break;
-        //         case 'json':
-        //             promises.push(Loader.addToResources(this.loadOrder.jsons, Loader.loadJson, this.resources.jsons));
-        //             break;
-        //         default:
-        //             console.log('Unknown type');
-        //             break;
-        //     }
-        //     // Awaits completion of all promises and calls callback function after 
-        //     const newPromises = promises.flat();
-        //     console.log(newPromises);
-        //     Promise.all(promises.flat()).then(callback);
-        // }
-
-        // static addToResources(loadOrderArr, promiseOnLoad, loadResourcesArr) {
-        //     const promises = [];
-        //     for (const data
-        //         of loadOrderArr) {
-        //         const name = Object.keys(data)[0];
-        //         const src = Object.keys(data)[1];
-        //         console.log(data);
-        //         const promise = promiseOnLoad(data[src])
-        //             .then(obj => {
-        //                 // Adding data to resources
-        //                 loadResourcesArr[data[name]] = obj;
-        //                 console.log(loadResourcesArr);
-
-        //                 // deleting same data from loadOrder 
-        //                 if (loadOrderArr.includes(data)) {
-        //                     const index = loadOrderArr.indexOf(data);
-        //                     loadOrderArr.splice(index, 1);
-        //                 }
-        //             })
-        //         promises.push(promise);
-        //         console.log(promises);
-        //         return promises;
-        //     }
-        // }
+                        // deleting same data from loadOrder 
+                        if (loadOrderArr.includes(data)) {
+                            const index = loadOrderArr.indexOf(data);
+                            loadOrderArr.splice(index, 1);
+                        }
+                        // document.body.append(obj);
+                    })
+                promises.push(promise);
+            }
+            // Await completion of all promises
+            return Promise.all(promises);
+        }
 
         // Static method is available to the class itself only
         // and not to its instances

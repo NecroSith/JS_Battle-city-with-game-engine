@@ -25,6 +25,24 @@
             requestAnimationFrame(timestamp => this.tick(timestamp));
         }
 
+        get displayObjects() {
+            return getDisplayObjects(this.stage);
+
+            // Function is here so it's only accessible for this getter and not for anything else
+            // It iterates through all displayObjects (objects which are currently displayed on the canvas) and return them
+            // If the object is a container function calls itself and iterate through this container
+            function getDisplayObjects(container, result = []) {
+                for (let displayObject of container.displayObjects) {
+                    if (displayObject instanceof GameEngine.Container) {
+                        getDisplayObjects(displayObject, result);
+                    } else {
+                        result.push(displayObject);
+                    }
+                }
+                return result;
+            }
+        }
+
         render() {
             this.stage.draw(this.canvas, this.context);
         }
