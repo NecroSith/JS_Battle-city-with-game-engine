@@ -1,69 +1,39 @@
 (function() {
     'use strict';
 
-    class Sprite {
+    class Sprite extends GameEngine.DisplayObject {
         constructor(texture, args = []) {
+            super(args);
             this.texture = texture;
+
+            const frame = args.frame || {}
+
             this.frame = {
-                x: 0,
-                y: 0,
-                width: texture.width,
-                height: texture.height
+                x: frame.x || 0,
+                y: frame.y || 0,
+                width: frame.width || texture.width,
+                height: frame.width || texture.height
             }
 
-            this.x = args.x || 0;
-            this.y = args.y || 0;
-            this.width = args.width || this.frame.width;
+            if (args.width === undefined) {
+                this.width = this.frame.width;
+            }
+
+            if (args.height === undefined) {
+                this.height = this.frame.height;
+            }
+
             this.height = args.height || this.frame.height;
-
-            this.anchorX = args.anchorX || 0;
-            this.anchorY = args.anchorY || 0;
-        }
-
-        setScale(value) {
-            this.scaleX = value;
-            this.scaleY = value;
-        }
-
-        get absoluteX() {
-            return this.x - this.anchorX * this.width;
-        }
-
-        set absoluteX(value) {
-            this.x = value + this.anchorX * this.width;
-            return value;
-        }
-
-        get absoluteY() {
-            return this.y - this.anchorY * this.height;
-        }
-
-        set absoluteY(value) {
-            this.y = value + this.anchorY * this.height;
-            return value;
-        }
-
-        // Getter, used to get a specific property on the fly (e.g. in the console)
-        get scaleX() {
-            return this.width / this.frame.width;
-        }
-
-        // Setter, used to set a specific property on the fly (e.g. in the console)
-        set scaleX(value) {
-            this.width = this.frame.width * value;
-            return value;
-        }
-
-        get scaleY() {
-            return this.height / this.frame.height;
-        }
-
-        set scaleY(value) {
-            this.height = this.frame.height * value;
-            return value;
         }
 
         draw(canvas, context) {
+            context.save();
+
+            // Changes the coordinates of the origin (top left) of the image
+            context.translate(this.x, this.y);
+            context.scale(this.scaleX, this.scaleY);
+            context.rotate(-this.rotation);
+
             context.drawImage(
                 this.texture,
 
@@ -72,11 +42,23 @@
                 this.frame.width,
                 this.frame.height,
 
-                this.absoluteX,
-                this.absoluteY,
+                this.absoluteX - this.x,
+                this.absoluteY - this.y,
                 this.width,
                 this.height
+
+                // We don't need to specify scale based width and height anymore as they are performed above in context.scale
+                // this.width * this.scaleX,
+                // this.height * this.scaleY
             )
+
+            // Draw anchor point above the image
+
+            context.beginPath();
+            context.fillStyle = 'red';
+            context.arc(0, 0, 5, 0, Math.PI * 2);
+            context.fill();
+            context.restore();
         }
 
     }

@@ -9,10 +9,11 @@
 </head>
 
 <body>
-    <script src="./engine/Loader.js"></script>
+    <script src="./engine/DisplayObject.js"></script>
     <script src="./engine/Renderer.js"></script>
     <script src="./engine/Sprite.js"></script>
     <script src="./engine/Container.js"></script>
+    <script src="./engine/Loader.js"></script>
 
     <script>
         const {
@@ -32,11 +33,14 @@
                     return;
                 }
 
-                sprite2.frame.x = sprite2.frame.width / 2 + 100 * Math.cos(timestamp / 200);
-                sprite2.frame.y = sprite2.frame.height / 2 + 100 * Math.sin(timestamp / 100);
+                sprite1.rotation = timestamp / 1000;
+                sprite2.rotation = -timestamp / 1000;
 
-                sprite2.x = renderer.canvas.width / 2 + 100 * Math.cos(timestamp / 200);
-                sprite2.y = renderer.canvas.height / 2 + 100 * Math.sin(timestamp / 100);
+                // sprite2.frame.x = sprite2.frame.width / 2 + 100 * Math.cos(timestamp / 200);
+                // sprite2.frame.y = sprite2.frame.height / 2 + 100 * Math.sin(timestamp / 100);
+
+                // sprite2.x = renderer.canvas.width / 2 + 100 * Math.cos(timestamp / 200);
+                // sprite2.y = renderer.canvas.height / 2 + 100 * Math.sin(timestamp / 100);
             }
         });
 
@@ -50,33 +54,43 @@
         loader.addJson('star wars', './static/json/starwars.json');
         loader.load('img', () => {
             sprite1 = new Sprite(loader.getImage('cyberpunk'), {
+                x: renderer.canvas.width / 2,
+                y: renderer.canvas.height / 2,
+                rotation: Math.PI / 2,
+                scale: 0.25,
+                anchorX: 0.5,
+                anchorY: 0.5
+            });
+
+            const container = new Container();
+
+            // container.x = 100;
+            // container.y = 100;
+            // container.rotation = Math.PI / 4;
+            // container.anchorX = 0.5;
+            // container.anchorY = 0.5;
+
+            renderer.stage.add(container);
+            container.add(sprite1);
+
+            // sprite1.absoluteX = 0;
+            // sprite1.absoluteY = 0;
+        });
+
+        loader.load('img', () => {
+            sprite2 = new Sprite(loader.getImage('dyson'), {
+                scale: 0.75,
                 anchorX: 0.5,
                 anchorY: 0.5
             });
 
             const container = new Container();
             renderer.stage.add(container);
-            container.add(sprite1);
-
-            sprite1.absoluteX = 0;
-            sprite1.absoluteY = 0;
-        });
-
-        loader.load('img', () => {
-            sprite2 = new Sprite(loader.getImage('dyson'), {
-                // anchorX: 0,
-                // anchorY: 0
-            });
-
-            const container = new Container();
-            renderer.stage.add(container);
             container.add(sprite2);
 
-            // sprite2.width = 200;
-            // sprite2.height = 200;
 
-            sprite2.absoluteX = 0;
-            sprite2.absoluteY = 0;
+            // sprite2.absoluteX = 0;
+            // sprite2.absoluteY = 0;
 
         })
 

@@ -16,16 +16,13 @@
 
         addImage(name, src) {
             this.loadOrder.images.push({ name, src });
-            console.log(this.loadOrder.images);
         }
 
         addJson(name, address) {
             this.loadOrder.jsons.push({ name, address });
-            console.log(this.loadOrder.jsons);
         }
 
         getImage(name) {
-            console.log(this.resources.images.name);
             return this.resources.images[name];
         }
 
@@ -56,13 +53,10 @@
                 of loadOrderArr) {
                 const name = Object.keys(data)[0];
                 const src = Object.keys(data)[1];
-                console.log(data);
                 const promise = promiseOnLoad(data[src])
                     .then(obj => {
                         // Adding data to resources
                         loadResourcesArr[data[name]] = obj;
-                        console.log(loadResourcesArr);
-
                         // deleting same data from loadOrder 
                         if (loadOrderArr.includes(data)) {
                             const index = loadOrderArr.indexOf(data);
